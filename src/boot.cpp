@@ -3,57 +3,116 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <string.h>
 #include "helperFuncs.h"
 
 
 int main (int argc, char* argv[])
 {
 	int N;			//number of bootstrap iterations
-	std::string filename;
+	std::string IN_FILE = "";
+	bool useDataFile = false;	//if true, then use data file provided
+
+	std::cout << std::endl;
 
 	if (argc == 1)
 	{
 		N = 1000000;	//default number of iterations
 		std::cout << "Default number of iterations: " << N << std::endl;
+		std::cout << "Using sample data..." << std::endl;
+		useDataFile = false;
 	}
 	else if (argc == 2)
 	{
 		N = atoi(argv[1]);
 		std::cout << "Read-in number of iterations: " << N << std::endl;
+		std::cout << "Using sample data..." << std::endl;
+		useDataFile = false;
 	}
 	else if (argc == 3)
 	{
 		//read in num iterations and file name
 		N = atoi(argv[1]);
-		filename = std::string(argv[2]);
+		IN_FILE = std::string(argv[2]);
 		std::cout << "Set N to: " << N << std::endl;
-		std::cout << "Set filename to: " << filename << std::endl;
+		std::cout << "Set filename to: " << IN_FILE << std::endl;
+		useDataFile = true;
 	}
 	std::cout << std::endl;
 
 	//initialise random number generator
 	srand (time(NULL));
 
-	//some test data
-	//double dat1[] = {30,31,36,37,38,39,46};
-	//double dat2[] = {26,28,29,33,34,39};
-	//some real data
-	double P[] = {3.75,4,4.5,4.75,4.75,3.666666667,3.25,4.5,4.5,4,4.25,4,6.75,6,4,4.666666667,4,3.75,4.5,4.5,4.75,6,3.333333333,4.5,5.25,5.25,4.5,4.5,4.75,4.25};
-	double NP[] = {5,5,7.666666667,3.666666667,4.333333333,3.666666667,3.333333333,5.666666667,7,5.333333333,3.666666667,3.333333333,4,6.333333333,4,3,5.333333333,3.666666667,4,3.333333333,5.333333333,3.333333333,4.666666667,3.5,4.333333333,8.333333333,5.333333333,4.666666667,3};
-
-	//the two starting data structures
-	std::vector<double> one (P, P + sizeof(P) / sizeof(double));
-	std::vector<double> two (NP, NP + sizeof(NP) / sizeof(double));
-	//the concatenated data containing both
-	std::vector<double> concat;
-
-	//one.clear();
-	//two.clear();
-	concat.clear();
+	//data structures
+	std::vector<double> one;
+	std::vector<double> two;
 
 	//read in values from some external source
+	std::ifstream fileStream;
+	char charFileName[512];
+	char *file = new char[IN_FILE.size()+1];
+
+	if (useDataFile == true)
+	{
+		file[IN_FILE.size()] = 0;
+		memcpy(file, IN_FILE.c_str(), IN_FILE.size());
+		strcpy (charFileName, file);
+		fileStream.open(charFileName, std::fstream::in);
+
+		if (fileStream.is_open())
+		{
+			std::cout << "Opened data file: " << IN_FILE << std::endl;
+		}
+		else
+		{
+			std::cout << "ERROR: cannot open data file: " << IN_FILE << std::endl;
+			std::cout << "END..." << std::endl << std::endl;
+			fileStream.close();
+			delete file;
+			return 1;
+		}
+
+		std::string readLine;
+		std::getline(fileStream, readLine);
+		std::cout << "Name of first set of data: " << readLine << std::endl;
+		readLine = "";
+		std::getline(fileStream, readLine);
+		std::cout << "Data: " << readLine << std::endl;
+		std::vector<std::string> tempOne = Split(readLine, ',');
+		one = StoDvector(tempOne);
+		readLine = "";
+		std::getline(fileStream, readLine);
+		std::cout << "Name of second set of data: " << readLine << std::endl;
+		readLine = "";
+		std::getline(fileStream, readLine);
+		std::cout << "Data: " << readLine << std::endl;
+		std::vector<std::string> tempTwo = Split(readLine, ',');
+		two = StoDvector(tempTwo);
+		std::cout << std::endl;
+
+		fileStream.close();
+	}
+	else
+	{
+		//use some predefined sample data
+		double P[] = {3.75,4,4.5,4.75,4.75,3.666666667,3.25,4.5,4.5,4,4.25,4,6.75,6,4,4.666666667,4,3.75,4.5,4.5,4.75,6,3.333333333,4.5,5.25,5.25,4.5,4.5,4.75,4.25};
+		double NP[] = {5,5,7.666666667,3.666666667,4.333333333,3.666666667,3.333333333,5.666666667,7,5.333333333,3.666666667,3.333333333,4,6.333333333,4,3,5.333333333,3.666666667,4,3.333333333,5.333333333,3.333333333,4.666666667,3.5,4.333333333,8.333333333,5.333333333,4.666666667,3};
+		std::vector<double> A (P, P + sizeof(P) / sizeof(double));
+		std::vector<double> B (NP, NP + sizeof(NP) / sizeof(double));
+		one = A;
+		two = B;
+	}
+	delete file;
+
+	//the concatenated data containing both
+	std::vector<double> concat;
+	concat.clear();
 
 	//get sizes - n_one and n_two are the sample sizes
 	// for the bootstrapping
@@ -154,5 +213,7 @@ int main (int argc, char* argv[])
 
 	//histogram output:
 	std::vector<int> his = Histogram(result_mean);
+
+	std::cout << std::endl;
 
 }//end of main

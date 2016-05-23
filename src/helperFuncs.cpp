@@ -9,6 +9,51 @@
 
 #include "helperFuncs.h"
 
+
+std::vector<double> StoDvector (std::vector<std::string> _in)
+{
+	//given input vector, convert all elements to doubles
+	std::vector<double> toReturn;
+	std::string::size_type sz;
+
+	for (int a = 0; a < (int)_in.size(); a++)
+	{
+		try
+		{
+			toReturn.push_back( std::stod(_in[a], &sz) );
+		}
+		catch (const std::invalid_argument& ia)
+		{
+			std::cerr << "Invalid argument: " << ia.what() << std::endl;
+			std::cout << "Value: " << a << "\tis: " << _in[a] << std::endl;
+  		}
+
+	}
+
+	return toReturn;
+}
+
+std::vector<std::string> Split (const std::string &input, char splitter)
+{
+	std::vector<std::string> toReturn;
+	toReturn.clear();
+
+	std::stringstream ss(input);
+	std::string item;
+	while (std::getline(ss, item, splitter))
+	{
+		toReturn.push_back(item);
+	}
+
+	//seems as though final element has an extra character...
+	/*int size = toReturn.size();
+	std::string element = toReturn[size-1];	//the final element in vector
+	element.erase(element.size()-1);
+	toReturn[size-1] = element;*/
+
+	return toReturn;
+}
+
 std::vector<double> Stats (std::vector<double> data)
 {
 	//calculate mean and standard deviation of the data
