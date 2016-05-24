@@ -17,7 +17,9 @@ int main (int argc, char* argv[])
 {
 	int N;			//number of bootstrap iterations
 	std::string IN_FILE = "";
+	std::string OUT_FILE = "";
 	bool useDataFile = false;	//if true, then use data file provided
+	bool useOutputFile = false;
 
 	std::cout << std::endl;
 
@@ -26,14 +28,12 @@ int main (int argc, char* argv[])
 		N = 1000000;	//default number of iterations
 		std::cout << "Default number of iterations: " << N << std::endl;
 		std::cout << "Using sample data..." << std::endl;
-		useDataFile = false;
 	}
 	else if (argc == 2)
 	{
 		N = atoi(argv[1]);
 		std::cout << "Read-in number of iterations: " << N << std::endl;
 		std::cout << "Using sample data..." << std::endl;
-		useDataFile = false;
 	}
 	else if (argc == 3)
 	{
@@ -41,8 +41,26 @@ int main (int argc, char* argv[])
 		N = atoi(argv[1]);
 		IN_FILE = std::string(argv[2]);
 		std::cout << "Set N to: " << N << std::endl;
-		std::cout << "Set filename to: " << IN_FILE << std::endl;
+		std::cout << "Set input filename to: " << IN_FILE << std::endl;
 		useDataFile = true;
+	}
+	else if (argc == 4)
+	{
+		//read in num iterations and file name
+		N = atoi(argv[1]);
+		IN_FILE = std::string(argv[2]);
+		OUT_FILE = std::string(argv[3]);
+		std::cout << "Set N to: " << N << std::endl;
+		std::cout << "Set input filename to: " << IN_FILE << std::endl;
+		std::cout << "Set output filename to: " << OUT_FILE << std::endl;
+		useDataFile = true;
+		useOutputFile = true;
+	}
+	else
+	{
+		N = 100;	//default number of iterations
+		std::cout << "ERROR: unrecognised number of arguments passed" << std::endl;
+		std::cout << "Using minimal example with sample data..." << std::endl;
 	}
 	std::cout << std::endl;
 
@@ -198,6 +216,7 @@ int main (int argc, char* argv[])
 
 	std::cout << "Mean bootstrapped difference of means: " << mean_diff_means << std::endl;
 
+	//this method seems a bit crap...
 	double intermediate = mean_diff_sd / sqrt(mean_diff_n);
 	double bar = intermediate * 1.96; //assuming normal distribution
 	double lower = mean_diff_means - bar;
@@ -213,6 +232,18 @@ int main (int argc, char* argv[])
 
 	//histogram output:
 	std::vector<int> his = Histogram(result_mean);
+
+	//write data to file if output file is specified
+	if (useOutputFile)
+	{
+		std::ofstream outFile;
+		outFile.open(OUT_FILE.c_str(), std::fstream::out);
+
+		outFile << "Mean_diff,sd_diff,n_diff,CI_low,CI_high" << std::endl;
+		outFile << mean_diff_means << "," << mean_diff_sd << "," << mean_diff_n << "," << CIrange[0] << "," << CIrange[1] << std::endl;
+
+		outFile.close();
+	}
 
 	std::cout << std::endl;
 
