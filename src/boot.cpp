@@ -71,6 +71,10 @@ int main (int argc, char* argv[])
 	std::vector<double> one;
 	std::vector<double> two;
 
+	//names of the data sets
+	std::string nameOne;
+	std::string nameTwo;
+
 	//read in values from some external source
 	std::ifstream fileStream;
 	char charFileName[512];
@@ -99,6 +103,7 @@ int main (int argc, char* argv[])
 		std::string readLine;
 		std::getline(fileStream, readLine);
 		std::cout << "Name of first set of data: " << readLine << std::endl;
+		nameOne = readLine;
 		readLine = "";
 		std::getline(fileStream, readLine);
 		std::cout << "Data: " << readLine << std::endl;
@@ -107,6 +112,7 @@ int main (int argc, char* argv[])
 		readLine = "";
 		std::getline(fileStream, readLine);
 		std::cout << "Name of second set of data: " << readLine << std::endl;
+		nameTwo = readLine;
 		readLine = "";
 		std::getline(fileStream, readLine);
 		std::cout << "Data: " << readLine << std::endl;
@@ -123,6 +129,8 @@ int main (int argc, char* argv[])
 		double NP[] = {5,5,7.666666667,3.666666667,4.333333333,3.666666667,3.333333333,5.666666667,7,5.333333333,3.666666667,3.333333333,4,6.333333333,4,3,5.333333333,3.666666667,4,3.333333333,5.333333333,3.333333333,4.666666667,3.5,4.333333333,8.333333333,5.333333333,4.666666667,3};
 		std::vector<double> A (P, P + sizeof(P) / sizeof(double));
 		std::vector<double> B (NP, NP + sizeof(NP) / sizeof(double));
+		nameOne = "One";
+		nameTwo = "Two";
 		one = A;
 		two = B;
 	}
@@ -255,11 +263,11 @@ int main (int argc, char* argv[])
 		}
 		outFile << std::endl << std::endl;
 		std::vector<double> statsOne = Stats(one);
-		outFile << "Mean_One,SD_One,N_One" << std::endl;
+		outFile << "Mean_" << nameOne << ",SD_" << nameOne << ",N_" << nameOne << std::endl;
 		outFile << statsOne[0] << "," << statsOne[1] << "," << statsOne[2] << std::endl;
 		outFile << std::endl;
 		std::vector<double> statsTwo = Stats(two);
-		outFile << "Mean_Two,SD_Two,N_Two" << std::endl;
+		outFile << "Mean_" << nameTwo << ",SD_" << nameTwo << ",N_" << nameTwo << std::endl;
 		outFile << statsTwo[0] << "," << statsTwo[1] << "," << statsTwo[2] << std::endl;
 
 		outFile.close();
