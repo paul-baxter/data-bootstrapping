@@ -155,9 +155,9 @@ double DiffMean (int n_first, std::vector<double> data)
 	return (mean_first - mean_second);
 }
 
-std::vector<int> Histogram (std::vector<double> data)
+std::vector<int> Histogram (int num, std::vector<double> data, std::vector<double>& binCentres)
 {
-	int N_bins = 11;		//number of histogram bins
+	int N_bins = num;		//number of histogram bins
 						//should be able to automatically calculate this...
 	double min = data[0];	//min value in data
 	double max = data[0];	//max value in data
@@ -177,6 +177,13 @@ std::vector<int> Histogram (std::vector<double> data)
 
 	std::cout << "Min: " << min << "\tMax: " << max << "\tBin size: " << bin_size << std::endl;
 	std::cout << std::endl;
+
+	//calculate bin centres and put into vector
+	for (int aa = 0; aa < N_bins; aa++)
+	{
+		double centre = min + ((double)aa * bin_size) + (bin_size / 2.0);
+		binCentres.push_back(centre);
+	}
 
 	//following can be much improved!
 	for (int b = 0; b < N_bins; b++)

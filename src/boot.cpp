@@ -217,21 +217,22 @@ int main (int argc, char* argv[])
 	std::cout << "Mean bootstrapped difference of means: " << mean_diff_means << std::endl;
 
 	//this method seems a bit crap...
-	double intermediate = mean_diff_sd / sqrt(mean_diff_n);
-	double bar = intermediate * 1.96; //assuming normal distribution
-	double lower = mean_diff_means - bar;
-	double upper = mean_diff_means + bar;
+	//double intermediate = mean_diff_sd / sqrt(mean_diff_n);
+	//double bar = intermediate * 1.96; //assuming normal distribution
+	//double lower = mean_diff_means - bar;
+	//double upper = mean_diff_means + bar;
 
 	//18/08/15 - updated method to find 95%CI
 	std::vector<double> CIrange = FindCI(result_mean);
 
 	std::cout << std::endl;
-	std::cout << "95% CI (old): \t[" << lower << ", " << upper << "]" << std::endl;
-	std::cout << "95% CI (new): \t[" << CIrange[0] << ", " << CIrange[1] << "]" << std::endl;
+	//std::cout << "95% CI (old): \t[" << lower << ", " << upper << "]" << std::endl;
+	std::cout << "95% CI: \t[" << CIrange[0] << ", " << CIrange[1] << "]" << std::endl;
 	std::cout << std::endl;
 
 	//histogram output:
-	std::vector<int> his = Histogram(result_mean);
+	std::vector<double> binCentres;		//empty vector to put bin centres into
+	std::vector<int> his = Histogram(11, result_mean, binCentres);
 
 	//write data to file if output file is specified
 	if (useOutputFile)
@@ -239,8 +240,27 @@ int main (int argc, char* argv[])
 		std::ofstream outFile;
 		outFile.open(OUT_FILE.c_str(), std::fstream::out);
 
-		outFile << "Mean_diff,sd_diff,n_diff,CI_low,CI_high" << std::endl;
-		outFile << mean_diff_means << "," << mean_diff_sd << "," << mean_diff_n << "," << CIrange[0] << "," << CIrange[1] << std::endl;
+		outFile << "Actual_diff_means,Mean_diff,sd_diff,n_diff,CI_low,CI_high" << std::endl;
+		outFile << mean_diff << "," << mean_diff_means << "," << mean_diff_sd << "," << mean_diff_n << "," << CIrange[0] << "," << CIrange[1] << std::endl;
+		outFile << std::endl;
+		outFile << "Histogram (bin centres then contents):" << std::endl;
+		for (const auto bins: binCentres)
+		{
+			outFile << bins << ",";
+		}
+		outFile << std::endl;
+		for (const auto a: his)
+		{
+			outFile << a << ",";
+		}
+		outFile << std::endl << std::endl;
+		std::vector<double> statsOne = Stats(one);
+		outFile << "Mean_One,SD_One,N_One" << std::endl;
+		outFile << statsOne[0] << "," << statsOne[1] << "," << statsOne[2] << std::endl;
+		outFile << std::endl;
+		std::vector<double> statsTwo = Stats(two);
+		outFile << "Mean_Two,SD_Two,N_Two" << std::endl;
+		outFile << statsTwo[0] << "," << statsTwo[1] << "," << statsTwo[2] << std::endl;
 
 		outFile.close();
 	}
