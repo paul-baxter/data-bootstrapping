@@ -6,7 +6,13 @@ Uses cmake to build:
 
 * $ mkdir build && cd build
 
-* $ cmake .. && cd ..
+* $ cmake .. && make
+
+* $ cd ..
+
+Usage:
+
+* $ ./Bootstrapping N "input/data/file" "output/data/file"
 
 Between 0 and 3 arguments can be provided:
 <ol start="0">
@@ -15,10 +21,6 @@ Between 0 and 3 arguments can be provided:
   <li> A simulation will be run with the specified number of iterations, using data from the specified file (see file syntax below)</li>
   <li> A simulation will be run with the specified number of iterations, using data from the specified file (see file syntax below), and outputs data to a specified file</li>
 </ol>
-
-Usage:
-
-* $ ./Bootstrapping N "input/data/file" "output/data/file"
 
 Format of input data file:
 
