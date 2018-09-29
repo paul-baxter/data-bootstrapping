@@ -1,6 +1,6 @@
 # data-bootstrapping
 
-Simple utility to calculate the bootstrapped mean difference between two sets of (double) data, basic statistics of the two data sets, and a basic histogram of the bootstrapped difference of means.
+Simple utility to calculate the percentile bootstrapped mean difference between two sets of (double) data, basic statistics of the two data sets, and a basic histogram of the bootstrapped difference of means.
 
 Uses cmake to build:
 
