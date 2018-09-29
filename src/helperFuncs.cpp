@@ -209,7 +209,7 @@ std::vector<double> FindCI (std::vector<double> _in)
 	double low = 0.025;		//from 5%
 	double high = 0.975;	//from 5%
 	double size = (double)_in.size();
-	int indexLow = (int)((low * size) + 0.5);
+	int indexLow = (int)((low * size) - 0.5);
 	int indexHigh = (int)((high * size) + 0.5);
 	double lowCI = 0.0;
 	double highCI = 0.0;
