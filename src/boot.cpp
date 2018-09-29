@@ -159,13 +159,6 @@ int main (int argc, char* argv[])
 	//size of the concatenated vector
 	int n_concat = (int)concat.size();
 
-	//check contents of concat
-	/*for (int a = 0; a < n_concat; a++)
-	{
-		std::cout << concat[a] << " ";
-	}
-	std::cout << std::endl;*/
-
 	//have quick check for the length
 	if (n_concat != (n_one + n_two))
 	{
@@ -178,9 +171,9 @@ int main (int argc, char* argv[])
 	std::vector<double> result_mean;	//all the means
 	result_mean.clear();
 
-	/////////////////////////////////////////////////////////////
-	//			Start of the bootstrap process		    //
-	/////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////
+	//				Start of the bootstrap process		    	//
+	//////////////////////////////////////////////////////////////
 	std::vector<double> temp;
 
 	for (int aa = 0; aa < N; aa++)
@@ -192,7 +185,6 @@ int main (int argc, char* argv[])
 		{
 			//fill up the vector with correct number of entries
 			// ...WITH REPLACEMENT SELECTION PROCEDURE...
-			// ensure I get complete potential coverage
 			int ran_int = rand() % (n_concat);
 			double val = concat[ran_int];
 			temp.push_back(val);
@@ -211,11 +203,9 @@ int main (int argc, char* argv[])
 		result_mean.push_back(outcome);
 	}
 
-	/////////////////////////////////////////////////////////////
-	//			Stats on the bootstrap process		    //
-	/////////////////////////////////////////////////////////////
-
-	//06/05/15 - something in these calculations is very wrong!
+	//////////////////////////////////////////////////////////////
+	//				Stats on the bootstrap process		    	//
+	//////////////////////////////////////////////////////////////
 
 	std::vector<double> Outcome = Stats(result_mean);
 	double mean_diff_means = Outcome[0];
@@ -224,17 +214,10 @@ int main (int argc, char* argv[])
 
 	std::cout << "Mean bootstrapped difference of means: " << mean_diff_means << std::endl;
 
-	//this method seems a bit crap...
-	//double intermediate = mean_diff_sd / sqrt(mean_diff_n);
-	//double bar = intermediate * 1.96; //assuming normal distribution
-	//double lower = mean_diff_means - bar;
-	//double upper = mean_diff_means + bar;
-
 	//18/08/15 - updated method to find 95%CI
 	std::vector<double> CIrange = FindCI(result_mean);
 
 	std::cout << std::endl;
-	//std::cout << "95% CI (old): \t[" << lower << ", " << upper << "]" << std::endl;
 	std::cout << "95% CI: \t[" << CIrange[0] << ", " << CIrange[1] << "]" << std::endl;
 	std::cout << std::endl;
 

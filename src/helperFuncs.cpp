@@ -66,19 +66,8 @@ std::vector<double> Stats (std::vector<double> data)
 		return back;
 	}
 	int n = data.size();
-	//double prev_mean = data[0];
 	double mean = 0.0;
-	//double prev_s = 0.0;
-	//double s = 0.0;
-	//double variance = 0.0;
 	double sd = 0.0;
-
-	/*for (int a = 1; a < n; a++)
-	{
-		//don't have to include the first element
-		mean = prev_mean + ((data[a] - prev_mean)/(double)a);
-		s = prev_s + ((data[a] - prev_mean)*(data[a] - mean));
-	}*/
 
 	//CALCULATE THE MEAN
 	double tot_temp = 0.0;
@@ -97,9 +86,6 @@ std::vector<double> Stats (std::vector<double> data)
 	}
 	deviation = (double)(sum_deviation / (double)n);
 	sd = sqrt(deviation);
-
-	//variance = s / (n - 1);
-	//sd = sqrt(variance);
 
 	std::vector<double> stats;
 	stats.clear();
